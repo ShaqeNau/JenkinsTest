@@ -5,35 +5,36 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 
-
-class AutoBuildScript
+namespace AutoBuilding
 {
-    static string[] SCENES = FindEnabledEditorScenes();
-    static string TARGET_DIR = @"C:\Users\DemoPC\Desktop\build\build";
-
-    [MenuItem("Custom/CI/Win")]
-    static void PerformWindowsBuild()
+    class AutoBuildScript
     {
-        string ext = ".exe";
-        GenericBuild(SCENES, TARGET_DIR + ext, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64, BuildOptions.None);
-    }
+        static string[] SCENES = FindEnabledEditorScenes();
+        static string TARGET_DIR = @"C:\Users\DemoPC\Desktop\build\build";
 
-    private static string[] FindEnabledEditorScenes()
-    {
-        List<string> EditorScenes = new List<string>();
-        foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
+        [MenuItem("Custom/CI/Win")]
+        static void PerformWindowsBuild()
         {
-            if (!scene.enabled) continue;
-            EditorScenes.Add(scene.path);
+            string ext = ".exe";
+            GenericBuild(SCENES, TARGET_DIR + ext, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64, BuildOptions.None);
         }
-        return EditorScenes.ToArray();
-    }
 
-    static void GenericBuild(string[] scenes, string target_dir, BuildTargetGroup buildTargetGroup, BuildTarget build_target, BuildOptions build_options)
-    {
-        EditorUserBuildSettings.SwitchActiveBuildTarget(buildTargetGroup, build_target);
-        BuildPipeline.BuildPlayer(scenes, target_dir, build_target, build_options);
+        private static string[] FindEnabledEditorScenes()
+        {
+            List<string> EditorScenes = new List<string>();
+            foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
+            {
+                if (!scene.enabled) continue;
+                EditorScenes.Add(scene.path);
+            }
+            return EditorScenes.ToArray();
+        }
+
+        static void GenericBuild(string[] scenes, string target_dir, BuildTargetGroup buildTargetGroup, BuildTarget build_target, BuildOptions build_options)
+        {
+            EditorUserBuildSettings.SwitchActiveBuildTarget(buildTargetGroup, build_target);
+            BuildPipeline.BuildPlayer(scenes, target_dir, build_target, build_options);
+        }
     }
 }
-
 #endif
